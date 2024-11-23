@@ -31,12 +31,13 @@ const PersonForm = ({
   );
 };
 
-const Persons = ({ persons }) => {
+const Persons = ({ persons, deletePerson }) => {
   return (
     <div>
       {persons.map((person) => (
         <div key={person.id}>
           {person.name} {person.number}
+          <button onClick={() => deletePerson(person)}>delete</button>
         </div>
       ))}
     </div>
@@ -65,7 +66,7 @@ const App = () => {
     setSearch(event.target.value);
   };
 
-  const addName = (event) => {
+  const addPerson = (event) => {
     event.preventDefault();
 
     if (persons.find((person) => person.name === newName)) {
@@ -85,6 +86,15 @@ const App = () => {
     });
   };
 
+  const deletePerson = (person) => {
+    if (window.confirm(`Delete ${person.name} ?`)) {
+      personService.destroy(person.id).then((response) => {
+        const deletedPerson = response.data;
+        setPersons(persons.filter((p) => p.id !== deletedPerson.id));
+      });
+    }
+  };
+
   const handleNameChange = (event) => {
     setNewName(event.target.value);
   };
@@ -102,12 +112,12 @@ const App = () => {
       <PersonForm
         newName={newName}
         newNumber={newNumber}
-        handleSubmit={addName}
+        handleSubmit={addPerson}
         handleNameChange={handleNameChange}
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShow} deletePerson={deletePerson} />
     </div>
   );
 };
