@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import personService from "./services/persons";
 
-const Notification = ({ message }) => {
+const Notification = ({ message, error = false }) => {
   if (message === null) {
     return null;
   }
 
   const style = {
-    color: "green",
+    color: error ? "red" : "green",
     background: "lightgrey",
     fontSize: 20,
     borderStyle: "solid",
@@ -68,6 +68,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [search, setSearch] = useState("");
   const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((response) => {
@@ -96,19 +97,32 @@ const App = () => {
       ) {
         const person = persons.find((person) => person.name === newName);
         const updatedPerson = { ...person, number: newNumber };
-        personService.update(person.id, updatedPerson).then((response) => {
-          setPersons(
-            persons.map((person) =>
-              person.id === response.data.id ? response.data : person
-            )
-          );
-          setSuccessMessage(`Updated ${newName}'s number to ${newNumber}`);
-          setTimeout(() => {
-            setSuccessMessage(null);
-          }, 5000);
-          setNewName("");
-          setNewNumber("");
-        });
+        personService
+          .update(person.id, updatedPerson)
+          .then((response) => {
+            setPersons(
+              persons.map((person) =>
+                person.id === response.data.id ? response.data : person
+              )
+            );
+            setSuccessMessage(`Updated ${newName}'s number to ${newNumber}`);
+            setTimeout(() => {
+              setSuccessMessage(null);
+            }, 5000);
+            setNewName("");
+            setNewNumber("");
+          })
+          .catch(() => {
+            setErrorMessage(
+              `Information of ${newName} has already been removed from server`
+            );
+            setTimeout(() => {
+              setErrorMessage(null);
+            }, 5000);
+            setPersons(persons.filter((p) => p.id !== person.id));
+            setNewName("");
+            setNewNumber("");
+          });
       }
       return;
     }
@@ -154,6 +168,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Notification message={successMessage} />
+      <Notification message={errorMessage} error={true} />
 
       <Filter search={search} handleSearchChange={handleSearchChange} />
 
