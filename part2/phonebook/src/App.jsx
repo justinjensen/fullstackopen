@@ -1,6 +1,24 @@
 import { useState, useEffect } from "react";
 import personService from "./services/persons";
 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null;
+  }
+
+  const style = {
+    color: "green",
+    background: "lightgrey",
+    fontSize: 20,
+    borderStyle: "solid",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  };
+
+  return <div style={style}>{message}</div>;
+};
+
 const Filter = ({ search, handleSearchChange }) => {
   return (
     <div>
@@ -49,6 +67,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [search, setSearch] = useState("");
+  const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((response) => {
@@ -83,6 +102,12 @@ const App = () => {
               person.id === response.data.id ? response.data : person
             )
           );
+          setSuccessMessage(`Updated ${newName}'s number to ${newNumber}`);
+          setTimeout(() => {
+            setSuccessMessage(null);
+          }, 5000);
+          setNewName("");
+          setNewNumber("");
         });
       }
       return;
@@ -95,6 +120,10 @@ const App = () => {
 
     personService.create(newPerson).then((response) => {
       setPersons(persons.concat(response.data));
+      setSuccessMessage(`Added ${newName}`);
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 5000);
       setNewName("");
       setNewNumber("");
     });
@@ -105,6 +134,10 @@ const App = () => {
       personService.destroy(person.id).then((response) => {
         const deletedPerson = response.data;
         setPersons(persons.filter((p) => p.id !== deletedPerson.id));
+        setSuccessMessage(`Deleted ${deletedPerson.name}`);
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 5000);
       });
     }
   };
@@ -120,6 +153,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={successMessage} />
+
       <Filter search={search} handleSearchChange={handleSearchChange} />
 
       <h2>add a new</h2>
