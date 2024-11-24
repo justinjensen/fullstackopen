@@ -51,7 +51,12 @@ const App = () => {
       ) : (
         <div>
           {filteredCountries.map((country) => (
-            <div key={country.name.common}>{country.name.common}</div>
+            <div key={country.name.common}>
+              {country.name.common}
+              <button onClick={() => setSearch(country.name.common)}>
+                show
+              </button>
+            </div>
           ))}
         </div>
       )}
