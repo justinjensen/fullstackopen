@@ -145,10 +145,9 @@ const App = () => {
 
   const deletePerson = (person) => {
     if (confirm(`Delete ${person.name} ?`)) {
-      personService.destroy(person.id).then((response) => {
-        const deletedPerson = response.data;
-        setPersons(persons.filter((p) => p.id !== deletedPerson.id));
-        setSuccessMessage(`Deleted ${deletedPerson.name}`);
+      personService.destroy(person.id).then(() => {
+        setPersons(persons.filter((p) => p.id !== person.id));
+        setSuccessMessage(`Deleted ${person.name}`);
         setTimeout(() => {
           setSuccessMessage(null);
         }, 5000);
