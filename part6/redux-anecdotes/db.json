@@ -33,7 +33,7 @@
     {
       "id": "209a",
       "content": "Code is read much more often than it is written.",
-      "votes": 0
+      "votes": 1
     },
     {
       "id": "484a",
@@ -43,6 +43,21 @@
     {
       "id": "c1d8",
       "content": "The most dangerous phrase in the language is, ‘We’ve always done it this way.'",
+      "votes": 0
+    },
+    {
+      "id": "48f6",
+      "content": "There is always one more bug to fix. ",
+      "votes": 0
+    },
+    {
+      "id": "bfce",
+      "content": "First, solve the problem. Then, write the code.",
+      "votes": 0
+    },
+    {
+      "id": "9d2c",
+      "content": "Clean code always looks like it was written by someone who cares.",
       "votes": 0
     }
   ]
